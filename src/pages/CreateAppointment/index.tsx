@@ -1,6 +1,8 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState, useCallback } from "react";
+import { Platform } from "react-native";
 import Icon from 'react-native-vector-icons/Feather';
+import DateTimePicker from '@react-native-community/datetimepicker'
 
 import { useAuth } from "../../hooks/auth";
 import api from "../../services/api";
@@ -15,7 +17,11 @@ import {
   ProvidersList,
   ProviderContainer,
   ProviderAvatar,
-  ProviderName
+  ProviderName,
+  Calendar,
+  Title,
+  OpenDatePickerButton,
+  OpenDatePickerButtonText
 } from "./styles";
 
 interface RouteParms {
@@ -36,6 +42,8 @@ const CreateAppointment: React.FC = () => {
 
   const [providers, setProviders] = useState<Provider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState(providerId);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   
   useEffect(() => {
     api.get('providers').then(response => {
@@ -50,6 +58,20 @@ const CreateAppointment: React.FC = () => {
   const handleSelectProvider = useCallback((id: string) => {
     setSelectedProvider(id);
   }, []);
+
+  const handleToggleDatePicker = useCallback(() => {
+    setShowDatePicker((state) => !state);
+  }, []);
+
+  const handleDateChanged = useCallback((event: any, date: Date | undefined) => {
+    if (Platform.OS === 'android') {
+      setShowDatePicker(false);
+    }
+
+    if (date) {
+      setSelectedDate(date);
+    }
+  }, [])
 
   return (
     <Container>
@@ -84,6 +106,24 @@ const CreateAppointment: React.FC = () => {
           )}
         />
       </ProvidersListContainer>
+      
+      <Calendar>
+        <Title>Escolha a data</Title>
+        
+        <OpenDatePickerButton onPress={handleToggleDatePicker}>
+          <OpenDatePickerButtonText>Selecionar data</OpenDatePickerButtonText>
+        </OpenDatePickerButton>
+
+        {showDatePicker && (
+          <DateTimePicker 
+            value={selectedDate} 
+            onChange={handleDateChanged}
+            display={Platform.OS === 'android' ? 'calendar' : 'spinner'}
+            {...(Platform.OS === 'ios' && { textColor: '#f4ede8' })}
+            mode="date"
+          />
+        )}
+      </Calendar>
     </Container>
   );
 };
