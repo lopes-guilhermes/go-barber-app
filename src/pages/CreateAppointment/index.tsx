@@ -55,7 +55,7 @@ const CreateAppointment: React.FC = () => {
     api.get('providers').then(response => {
       setProviders(response.data);
     });
-  }, [providers])
+  }, [])
 
   useEffect(() => {
     api.get(`providers/${selectedProvider}/day-availability`, {
