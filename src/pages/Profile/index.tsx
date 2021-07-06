@@ -10,6 +10,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import * as Yup from 'yup';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
@@ -49,7 +50,7 @@ const Profile: React.FC = () => {
 
   const navigation = useNavigation();
 
-  const handleSignUp = useCallback(async (data: ProfileFormData) => {
+  const handleSubmit = useCallback(async (data: ProfileFormData) => {
     try {
       formRef.current?.setErrors({});
       
@@ -120,6 +121,35 @@ const Profile: React.FC = () => {
     navigation.goBack();
   }, [navigation]);
 
+  const handleUpdateAvatar = useCallback(() => {
+    launchImageLibrary({
+      mediaType: 'photo',
+      selectionLimit: 1
+    }, response => {
+      if (response.didCancel) {
+        return;
+      }
+
+      if (response.errorCode || response.errorMessage) {
+        console.log('ImagePicker errorCode -> ', response.errorCode);
+        console.log('ImagePicker errorMessage -> ', response.errorMessage);
+
+        Alert.alert('Erro ao atualizar seu avatar');
+      }
+      
+      const data = new FormData();
+      data.append('avatar', {
+        type: 'image/jpeg',
+        name: `${user.id}.jpg`,
+        uri: response.assets[0].uri
+      });
+      
+      api.patch('users/avatar', data).then(response => {
+        updateUser(response.data);
+      });
+    });
+  }, [updateUser, user.id]);
+
   return (
     <>
       <KeyboardAvoidingView 
@@ -136,7 +166,7 @@ const Profile: React.FC = () => {
               <Icon name="chevron-left" size={24} color="#999591" />
             </BackButton>
 
-            <UserAvatarButton onPress={() => {}}>
+            <UserAvatarButton onPress={handleUpdateAvatar}>
               <UserAvatar source={{ uri: user.avatar_url }} />
             </UserAvatarButton>
 
@@ -147,7 +177,7 @@ const Profile: React.FC = () => {
             <Form 
               ref={formRef} 
               initialData={user}
-              onSubmit={handleSignUp} 
+              onSubmit={handleSubmit} 
               style={{width: '100%'}}
             >
               <Input
