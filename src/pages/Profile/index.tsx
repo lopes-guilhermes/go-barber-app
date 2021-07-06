@@ -151,105 +151,104 @@ const Profile: React.FC = () => {
   }, [updateUser, user.id]);
 
   return (
-    <>
-      <KeyboardAvoidingView 
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        enabled
+    <KeyboardAvoidingView 
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      enabled
+    >
+      <ScrollView 
+        keyboardShouldPersistTaps="handled" 
+        contentContainerStyle={{ flex: 1 }}
       >
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ flex: 1}}
-        >
-          <Container>
-            <BackButton onPress={handleGoBack}>
-              <Icon name="chevron-left" size={24} color="#999591" />
-            </BackButton>
+        <BackButton onPress={handleGoBack}>
+          <Icon name="chevron-left" size={24} color="#999591" />
+        </BackButton>
 
-            <UserAvatarButton onPress={handleUpdateAvatar}>
-              <UserAvatar source={{ uri: user.avatar_url }} />
-            </UserAvatarButton>
+        <Container>
 
-            <View>
-              <Title>Meu perfil</Title>
-            </View>
+          <UserAvatarButton onPress={handleUpdateAvatar}>
+            <UserAvatar source={{ uri: user.avatar_url }} />
+          </UserAvatarButton>
 
-            <Form 
-              ref={formRef} 
-              initialData={user}
-              onSubmit={handleSubmit} 
-              style={{width: '100%'}}
-            >
-              <Input
-                autoCapitalize="words" 
-                name="name" 
-                icon="user" 
-                placeholder="Nome"
-                returnKeyType="next"
-                onSubmitEditing={() => {
-                  emailInputRef.current?.focus();
-                }}
-              />
+          <View>
+            <Title>Meu perfil</Title>
+          </View>
+
+          <Form 
+            ref={formRef} 
+            initialData={user}
+            onSubmit={handleSubmit} 
+            style={{width: '100%'}}
+          >
+            <Input
+              autoCapitalize="words" 
+              name="name" 
+              icon="user" 
+              placeholder="Nome"
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                emailInputRef.current?.focus();
+              }}
+            />
               
-              <Input
-                ref={emailInputRef} 
-                keyboardType="email-address"
-                autoCorrect={false}
-                autoCapitalize="none"
-                name="email" 
-                icon="mail" 
-                placeholder="E-mail"
-                returnKeyType="next"
-                onSubmitEditing={() => {
-                  oldPasswordInputRef.current?.focus();
-                }}
-              />
+            <Input
+              ref={emailInputRef} 
+              keyboardType="email-address"
+              autoCorrect={false}
+              autoCapitalize="none"
+              name="email" 
+              icon="mail" 
+              placeholder="E-mail"
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                oldPasswordInputRef.current?.focus();
+              }}
+            />
 
-              <Input
-                ref={oldPasswordInputRef} 
-                secureTextEntry
-                name="old_password" 
-                icon="lock" 
-                placeholder="Senha atual"
-                textContentType="newPassword"
-                returnKeyType="next"
-                containerStyle={{ marginTop: 16 }}
-                onSubmitEditing={() => {
-                  passwordInputRef.current?.focus();
-                }}
-              />
+            <Input
+              ref={oldPasswordInputRef} 
+              secureTextEntry
+              name="old_password" 
+              icon="lock" 
+              placeholder="Senha atual"
+              textContentType="newPassword"
+              returnKeyType="next"
+              containerStyle={{ marginTop: 16 }}
+              onSubmitEditing={() => {
+                passwordInputRef.current?.focus();
+              }}
+            />
 
-              <Input
-                ref={passwordInputRef} 
-                secureTextEntry
-                name="password" 
-                icon="lock" 
-                placeholder="Nova senha"
-                textContentType="newPassword"
-                returnKeyType="next"
-                onSubmitEditing={() => {
-                  confirmPasswordInputRef.current?.focus();
-                }}
-              />
+            <Input
+              ref={passwordInputRef} 
+              secureTextEntry
+              name="password" 
+              icon="lock" 
+              placeholder="Nova senha"
+              textContentType="newPassword"
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                confirmPasswordInputRef.current?.focus();
+              }}
+            />
 
-              <Input
-                ref={confirmPasswordInputRef} 
-                secureTextEntry
-                name="password_confirmation" 
-                icon="lock" 
-                placeholder="Confirmar senha"
-                textContentType="newPassword"
-                returnKeyType="send"
-                onSubmitEditing={() => formRef.current?.submitForm()}
-              />
+            <Input
+              ref={confirmPasswordInputRef} 
+              secureTextEntry
+              name="password_confirmation" 
+              icon="lock" 
+              placeholder="Confirmar senha"
+              textContentType="newPassword"
+              returnKeyType="send"
+              onSubmitEditing={() => formRef.current?.submitForm()}
+            />
               
-              <Button onPress={() => formRef.current?.submitForm()}>Confirmar mudanças</Button>
-            </Form>
+            <Button onPress={() => formRef.current?.submitForm()}>Confirmar mudanças</Button>
+          </Form>
 
-          </Container>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </>
+        </Container>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
